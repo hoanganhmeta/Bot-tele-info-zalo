@@ -1,0 +1,16 @@
+{
+  "name": "zalo-telegram-bot",
+  "version": "2.0.0",
+  "description": "Telegram bot lay thong tin Zalo su dung OAuth",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "scripts": {
+    "build": "echo 'Build completed'",
+    "set-webhook": "node netlify/functions/set-webhook.js"
+  },
+  "keywords": ["zalo", "telegram", "bot", "netlify"],
+  "author": "Your Name",
+  "license": "MIT"
+}
