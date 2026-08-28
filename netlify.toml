@@ -6,14 +6,16 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# === THÊM PHẦN NÀY ===
+# Cho phép truy cập file xác thực mà không bị redirect
+[[redirects]]
+  from = "/zalo_verifier*.html"
+  to = "/zalo_verifierU-_WU8RYUY9MdAuWiea15pU5iXNRysXCDp8r.html"
+  status = 200
+  force = true
+
+# Các redirect khác để sau
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
