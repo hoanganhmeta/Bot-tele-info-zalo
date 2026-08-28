@@ -6,23 +6,8 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# === QUAN TRỌNG: Cho phép Zalo truy cập file xác thực ===
-# Quy tắc này PHẢI đặt trước quy tắc redirect chung
-[[redirects]]
-  from = "/zalo_verifier*.html"
-  to = "/zalo_verifierU-_WU8RYUY9MdAuWiea15pU5iXNRysXCDp8r.html"
-  status = 200
-  force = true
-
-# Quy tắc redirect chung (cho các trang khác)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
+# Tạm thời tắt tất cả redirect để test
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
