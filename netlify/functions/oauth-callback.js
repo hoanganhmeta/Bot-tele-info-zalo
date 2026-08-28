@@ -1,39 +1,48 @@
 const fetch = require('node-fetch');
 
-// ============ CẤU HÌNH ============
-const CONFIG = {
-    ZALO_APP_ID: process.env.ZALO_APP_ID || '1752876402407902351',
-    ZALO_SECRET_KEY: process.env.ZALO_SECRET_KEY || '83DLdwH62YIT4YrJSSSO',
-};
-
-// ============ GỬI TIN NHẮN TELEGRAM ============
-async function sendTelegramMessage(chatId, text, parseMode = 'Markdown') {
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    if (!token) return;
-
-    const url = `https://api.telegram.org/bot${token}/sendMessage`;
-    
+exports.handler = async (event) => {
     try {
-        await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: text,
-                parse_mode: parseMode,
-                disable_web_page_preview: true
-            })
-        });
+        const params = new URLSearchParams(event.queryStringParameters || {});
+        const code = params.get('code');
+        const state = params.get('state');
+
+        if (!code) {
+            return {
+                statusCode: 200,
+                headers: { 'Content-Type': 'text/html' },
+                body: '<h1>Không tìm thấy mã xác thực</h1>'
+            };
+        }
+
+        // Decode state
+        let stateData = {};
+        try {
+            const decoded = Buffer.from(state, 'base64').toString('utf-8');
+            stateData = JSON.parse(decoded);
+        } catch (e) {
+            console.error('Decode state error:', e);
+        }
+
+        const chatId = stateData.chatId;
+        const verifier = stateData.verifier;
+
+        // Gửi thông báo về Telegram (tùy chọn)
+        // ...
+
+        return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'text/html' },
+            body: '<h1>✅ Đăng nhập thành công! Vui lòng quay lại Telegram</h1>'
+        };
+
     } catch (error) {
-        console.error('Telegram send error:', error);
+        console.error('Error:', error);
+        return {
+            statusCode: 500,
+            body: 'Internal Server Error'
+        };
     }
-}
-
-// ============ ĐỔI CODE LẤY TOKEN ============
-async function exchangeCodeForToken(code, verifier) {
-    try {
-        const response = await fetch('https://oauth.zaloapp.com/v4/access_token', {
-            method: 'POST',
+};
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'secret_key': CONFIG.ZALO_SECRET_KEY
