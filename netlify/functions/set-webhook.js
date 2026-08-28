@@ -1,52 +1,29 @@
 const fetch = require('node-fetch');
 
-async function setWebhook() {
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    
-    if (!token) {
-        console.error('❌ TELEGRAM_BOT_TOKEN is not set!');
-        console.log('Please set TELEGRAM_BOT_TOKEN in environment variables');
-        return;
-    }
-
-    // THAY ĐỔI URL NÀY THÀNH URL CỦA BẠN
-    const webhookUrl = 'https://your-app.netlify.app/.netlify/functions/telegram-bot';
-    
-    console.log('🔄 Setting webhook...');
-    console.log(`📡 Webhook URL: ${webhookUrl}`);
-
+exports.handler = async (event, context) => {
     try {
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+        const webhookUrl = 'https://hoanganhbzl.netlify.app/.netlify/functions/telegram-bot';
+        
         const response = await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                url: webhookUrl,
-                allowed_updates: ['message']
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: webhookUrl })
         });
-
+        
         const result = await response.json();
-        console.log('✅ Webhook setup result:', result);
-
-        if (result.ok) {
-            const infoResponse = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`);
-            const info = await infoResponse.json();
-            console.log('📊 Current webhook info:', info);
-            
-            console.log('\n✅ Setup completed successfully!');
-            console.log('📱 Bot is ready to use on Telegram');
-        }
-
+        
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ 
+                message: 'Webhook set successfully', 
+                result: result 
+            })
+        };
     } catch (error) {
-        console.error('❌ Error setting webhook:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message })
+        };
     }
-}
-
-// Chạy script
-if (require.main === module) {
-    setWebhook();
-}
-
-module.exports = { setWebhook };
+};
